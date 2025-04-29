@@ -1,3 +1,3 @@
-import { Redis } from 'ioredis';
+import IORedis from 'ioredis';
 
-export const redis = new Redis('redis://localhost:6379');
+export const redis = new IORedis({ maxRetriesPerRequest: null });
