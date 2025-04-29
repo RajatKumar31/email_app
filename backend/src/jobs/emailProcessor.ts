@@ -4,6 +4,7 @@ import { resend } from '../config/resend';
 import { db } from '../config/db';
 import { emails } from '../schema/email';
 import { eq } from 'drizzle-orm';
+import { EmailStatus } from "../schema/email";
 
 export const emailWorker = new Worker(
     'emailQueue',
@@ -18,7 +19,7 @@ export const emailWorker = new Worker(
                 html: email.body,
             });
 
-            let status = result.data?.id ? "sent" : "failed";
+            let status: EmailStatus = result.data?.id ? "sent" : "failed";
 
             await db.update(emails).set({ status, sentAt: new Date() }).where(eq(emails.id, email.id));
         } catch (err: any) {

@@ -4,8 +4,10 @@ import { emailQueue } from '../jobs/index';
 import { emails } from '../schema/email';
 
 export async function schedule(req: Request, res: Response): Promise<any> {
-    const { to, subject, body, scheduledAt } = req.body;
+    let { to, subject, body, scheduledAt } = req.body;
+
     try {
+        scheduledAt = new Date(scheduledAt);
         // Insert email data into the database with a 'scheduled' status
         const insertedEmail = await db.insert(emails).values({
             to,
