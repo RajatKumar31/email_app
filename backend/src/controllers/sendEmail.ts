@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { resend } from '../config/resend';
 import { db } from '../config/db';
 import { emails } from '../schema/email';
+import { EmailStatus } from '../schema/email';
 
 export async function sendNow(req: Request, res: Response): Promise<any> {
     const { to, subject, body } = req.body;
@@ -14,7 +15,7 @@ export async function sendNow(req: Request, res: Response): Promise<any> {
             html: body,
         });
 
-        let status = result.data?.id ? "sent" : "failed";
+        let status: EmailStatus = result.data?.id ? "sent" : "failed";
 
         // Insert email record into the database
         const insertedEmail = await db.insert(emails).values({

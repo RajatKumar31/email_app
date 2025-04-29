@@ -12,3 +12,5 @@ export const emails = pgTable('emails', {
     sentAt: timestamp('sent_at', { withTimezone: true }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
+
+export type EmailStatus = 'sent' | 'scheduled' | 'failed';
