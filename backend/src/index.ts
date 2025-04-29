@@ -4,8 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import bodyParser from 'body-parser';
 import emailRoutes from "./routes/emailRoutes";
-
-
+import "./jobs/emailProcessor";
 
 const app = express();
 
