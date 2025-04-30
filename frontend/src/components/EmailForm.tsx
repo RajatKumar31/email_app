@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { DateTimePicker } from "@/components/ui/datetimepicker";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { X, Maximize2, Minimize2, ChevronDown } from "lucide-react";
 import {
   Popover,
@@ -60,10 +60,12 @@ export default function EmailForm({ onClose }: EmailFormProps) {
       setBody("");
       setScheduledAt(null);
       onClose?.();
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message || "Failed to send or schedule email",
-      );
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        setError(
+          err?.response?.data?.message || "Failed to send or schedule email",
+        );
+      }
     } finally {
       setLoading(false);
     }

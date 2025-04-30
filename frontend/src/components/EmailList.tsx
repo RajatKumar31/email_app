@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { RefreshCcw, Loader } from "lucide-react";
 
 interface Email {
@@ -30,8 +30,10 @@ export default function SentEmailList() {
       );
       setEmails(response.data.data);
       setTotalEmails(response.data.totalItems);
-    } catch (err: any) {
-      setError("Failed to fetch sent emails");
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        setError(err?.response?.data?.message || "Failed to fetch sent emails");
+      }
     } finally {
       setLoading(false);
     }
