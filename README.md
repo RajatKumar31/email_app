@@ -17,4 +17,5 @@
 7. Move to the frontend folder and do "npm i".
 8. Create a .env file and add the following:
 
-   NEXT_PUBLIC_API_URL = 
+   NEXT_PUBLIC_API_URL = http://localhost:5000/emails
+ 
