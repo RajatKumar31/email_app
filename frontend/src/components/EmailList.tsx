@@ -1,50 +1,27 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import axios, { AxiosError } from "axios";
 import { RefreshCcw, Loader } from "lucide-react";
+import { Email } from "../app/page";
 
-interface Email {
-  id: string;
-  to: string;
-  subject: string;
-  body: string;
-  sentAt: string;
-}
-
-export default function SentEmailList() {
-  const [emails, setEmails] = useState<Email[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const limit = 4;
-  const [totalEmails, setTotalEmails] = useState(0);
-
-  const fetchEmails = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}?page=${page}&limit=${limit}`,
-      );
-      setEmails(response.data.data);
-      setTotalEmails(response.data.totalItems);
-    } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        setError(err?.response?.data?.message || "Failed to fetch sent emails");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [page]);
-
-  useEffect(() => {
-    fetchEmails();
-  }, [fetchEmails]);
-
-  const start = (page - 1) * limit + 1;
-  const end = Math.min(page * limit, totalEmails);
+export default function SentEmailList({
+  emails,
+  loading,
+  error,
+  totalEmails,
+  page,
+  setPageAction,
+  fetchEmailsAction,
+}: {
+  emails: Email[];
+  loading: boolean;
+  error: string | null;
+  totalEmails: number;
+  page: number;
+  setPageAction: React.Dispatch<React.SetStateAction<number>>;
+  fetchEmailsAction: () => void;
+}) {
+  const start = (page - 1) * 4 + 1; // limit is 4
+  const end = Math.min(page * 4, totalEmails);
 
   return (
     <div className="space-y-4 max-w-4xl mx-auto mt-8">
@@ -52,7 +29,7 @@ export default function SentEmailList() {
         <div className="flex items-center">
           <h2 className="text-xl font-semibold">Sent Emails</h2>
           <button
-            onClick={fetchEmails}
+            onClick={fetchEmailsAction}
             className="flex items-center gap-1 text-sm text-gray-600 px-3 py-1 rounded cursor-pointer"
           >
             <span>
@@ -65,7 +42,7 @@ export default function SentEmailList() {
           <div className="flex items-center gap-4">
             <button
               disabled={page === 1}
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              onClick={() => setPageAction((prev) => Math.max(prev - 1, 1))}
               className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm cursor-pointer"
             >
               Previous
@@ -75,7 +52,7 @@ export default function SentEmailList() {
             </p>
             <button
               disabled={end >= totalEmails}
-              onClick={() => setPage((prev) => prev + 1)}
+              onClick={() => setPageAction((prev) => prev + 1)}
               className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm cursor-pointer"
             >
               Next
@@ -99,15 +76,23 @@ export default function SentEmailList() {
           ) : (
             <div className="space-y-4">
               {emails.map((email) => (
-                <div key={email.id} className="border p-2 rounded-md shadow-sm">
+                <div
+                  key={email.id}
+                  className="relative border p-2 rounded-md shadow-sm"
+                >
+                  <div className="absolute top-2 right-2 text-xs text-gray px-2 py-1 rounded-md bg-gray-300">
+                    {email.status}
+                  </div>
                   <h3 className="font-semibold">{email.subject}</h3>
                   <p className="text-sm text-gray-500">To: {email.to}</p>
                   <p className="mt-1 text-ellipsis overflow-hidden whitespace-normal">
                     {email.body}
                   </p>
-                  <p className="text-xs text-gray-400">
-                    Sent At: {new Date(email.sentAt).toLocaleString()}
-                  </p>
+                  {email.sentAt && (
+                    <p className="text-xs text-gray-400">
+                      Sent At: {new Date(email.sentAt).toLocaleString()}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

@@ -15,9 +15,13 @@ import {
 
 interface EmailFormProps {
   onClose?: () => void;
+  onEmailSent?: () => void;
 }
 
-export default function EmailForm({ onClose }: EmailFormProps) {
+export default function EmailForm({
+  onClose,
+  onEmailSent,
+}: EmailFormProps & { onEmailSent?: () => void }) {
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
@@ -60,6 +64,7 @@ export default function EmailForm({ onClose }: EmailFormProps) {
       setBody("");
       setScheduledAt(null);
       onClose?.();
+      onEmailSent?.();
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         setError(
