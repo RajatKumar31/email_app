@@ -24,7 +24,7 @@ export async function sendNow(req: Request, res: Response): Promise<any> {
             body,
             status,
             sentAt: new Date(),
-        });
+        }).returning();
 
         // Return the inserted email record as a response
         return res.status(200).json(insertedEmail);
