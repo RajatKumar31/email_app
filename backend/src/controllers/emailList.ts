@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
 import { emails } from '../schema/email';
-import { desc, sql, eq } from 'drizzle-orm';
+import { desc, sql } from 'drizzle-orm';
 
 export async function listEmails(req: Request, res: Response): Promise<any> {
     try {
