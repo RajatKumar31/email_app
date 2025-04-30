@@ -45,7 +45,7 @@ export default function EmailForm({ onClose }: EmailFormProps) {
       if (scheduledAt) {
         // Send email via schedule API
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/_schedule`,
+          `${process.env.NEXT_PUBLIC_API_URL}/schedule`,
           emailData,
         );
         console.log("response : ", response);
@@ -53,7 +53,7 @@ export default function EmailForm({ onClose }: EmailFormProps) {
       } else {
         // Send email immediately
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/send-email`,
+          `${process.env.NEXT_PUBLIC_API_URL}/send`,
           emailData,
         );
         console.log("response : ", response);
