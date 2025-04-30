@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
 import { emails } from '../schema/email';
-import { desc } from 'drizzle-orm';
+import { desc, sql } from 'drizzle-orm';
 
 export async function listEmails(req: Request, res: Response): Promise<any> {
     try {
@@ -14,7 +14,15 @@ export async function listEmails(req: Request, res: Response): Promise<any> {
             .orderBy(desc(emails.sentAt))
             .limit(limitNum)
             .offset(offset);
-        return res.status(200).json({ data });
+
+        const [{ count }] = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(emails);
+
+        const totalItems = Number(count);
+        const totalPages = Math.ceil(totalItems / limitNum);
+
+        return res.status(200).json({ totalItems, totalPages, data });
     } catch (error: any) {
         return res.status(500).json({ error: error.message });
     }
