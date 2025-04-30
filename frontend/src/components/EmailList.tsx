@@ -14,7 +14,7 @@ interface Email {
 
 export default function SentEmailList() {
   const [emails, setEmails] = useState<Email[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const limit = 4;

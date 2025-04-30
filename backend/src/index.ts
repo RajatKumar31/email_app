@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
-app.use("/emails", emailRoutes);
+app.use("/api/emails", emailRoutes);
 
 
 app.listen(5000, () => {
