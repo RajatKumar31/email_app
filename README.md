@@ -2,6 +2,7 @@
 
 # Tech Stack :
 Backend : NodeJS, ExpressJS, Postgresql, BullMQ, Drizzle ORM
+
 Frontend : Nextjs, Shadcn/ui, Tailwind css
 
 # Steps to setup the project:
