@@ -8,6 +8,17 @@ export async function schedule(req: Request, res: Response): Promise<any> {
 
     try {
         scheduledAt = new Date(scheduledAt);
+
+        // Calculate delay based on scheduled time
+        const delay = new Date(scheduledAt).getTime() - Date.now();
+        if (delay < 0) {
+            return res.status(500).json({ message: "Invalid scheduled time" });
+        }
+        // Convert delay to minutes
+        const delayInMinutes = delay / 60000;
+
+        // console.log(`Delay in minutes: ${delayInMinutes}`);
+
         // Insert email data into the database with a 'scheduled' status
         const insertedEmail = await db.insert(emails).values({
             to,
@@ -16,9 +27,6 @@ export async function schedule(req: Request, res: Response): Promise<any> {
             scheduledAt,
             status: 'scheduled',
         }).returning();
-
-        // Calculate delay based on scheduled time
-        const delay = new Date(scheduledAt).getTime() - Date.now();
 
         // Add to email queue with delay and retry attempts
         await emailQueue.add('send-email', { email: insertedEmail[0] }, { delay, attempts: 3 });
