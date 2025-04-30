@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { listEmails } from '../controllers/emailList';
-import { sendNow } from '../controllers/sendEmail';
-import { schedule } from '../controllers/scheduleEmail';
+import { sendEmail } from '../controllers/sendEmail';
+import { scheduleEmail } from '../controllers/scheduleEmail';
 
 const router = Router();
 
 router.get('/', listEmails);
-router.post('/send', sendNow);
-router.post('/schedule', schedule);
+router.post('/send', sendEmail);
+router.post('/schedule', scheduleEmail);
 
 export default router;

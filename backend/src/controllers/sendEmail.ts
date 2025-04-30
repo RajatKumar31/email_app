@@ -3,7 +3,7 @@ import { db } from '../config/db';
 import { emails } from '../schema/email';
 import { emailQueue } from '../jobs/emailQueue';
 
-export async function sendNow(req: Request, res: Response): Promise<any> {
+export async function sendEmail(req: Request, res: Response): Promise<any> {
     const { to, subject, body } = req.body;
     try {
         // Insert email into DB (with status 'pending')

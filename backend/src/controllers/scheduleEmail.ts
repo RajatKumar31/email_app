@@ -3,7 +3,7 @@ import { db } from '../config/db';
 import { emailQueue } from '../jobs/emailQueue';
 import { emails } from '../schema/email';
 
-export async function schedule(req: Request, res: Response): Promise<any> {
+export async function scheduleEmail(req: Request, res: Response): Promise<any> {
     let { to, subject, body, scheduledAt } = req.body;
 
     try {
