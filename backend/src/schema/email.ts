@@ -1,6 +1,6 @@
 import { pgTable, pgEnum, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
-export const statusEnum = pgEnum('status', ['sent', 'scheduled', 'failed']);
+export const statusEnum = pgEnum('status', ['sent', 'scheduled', 'failed', 'pending']);
 
 export const emails = pgTable('emails', {
     id: uuid('id').primaryKey().defaultRandom(),
