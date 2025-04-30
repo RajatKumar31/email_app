@@ -12,6 +12,7 @@ export interface Email {
   subject: string;
   body: string;
   sentAt: string;
+  scheduledAt: string;
   status: string;
 }
 

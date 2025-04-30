@@ -15,11 +15,13 @@ Frontend : Nextjs, Shadcn/ui, Tailwind css
    
     REDIS_URL= redis://localhost:6379 (redis connection url)
 
-5. Run "npx drizzle-kit push"
-6. Run "npm start" to run the project.
+4. Run "npx drizzle-kit push"
+5. Run "npm start" to run the backend.
 
-7. Move to the frontend folder and do "npm i".
-8. Create a .env file and add the following:
+6. Move to the frontend folder and do "npm i".
+7. Create a .env file and add the following:
 
    NEXT_PUBLIC_API_URL = http://localhost:5000/api/emails  (api base url)
+
+8. Run "npm run dev" to run the frontend.
  

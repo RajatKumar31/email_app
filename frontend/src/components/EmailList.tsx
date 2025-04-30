@@ -88,9 +88,15 @@ export default function SentEmailList({
                   <p className="mt-1 text-ellipsis overflow-hidden whitespace-normal">
                     {email.body}
                   </p>
-                  {email.sentAt && (
+                  {email.status === "sent" && email.sentAt && (
                     <p className="text-xs text-gray-400">
                       Sent At: {new Date(email.sentAt).toLocaleString()}
+                    </p>
+                  )}
+                  {email.status === "scheduled" && email.scheduledAt && (
+                    <p className="text-xs text-gray-400">
+                      Scheduled At:{" "}
+                      {new Date(email.scheduledAt).toLocaleString()}
                     </p>
                   )}
                 </div>
