@@ -122,6 +122,9 @@ export default function EmailForm({ onClose }: EmailFormProps) {
           onChange={(e) => setBody(e.target.value)}
           rows={6}
           required
+          className={`overflow-y-auto resize-none ${
+            isMaximized ? "h-80" : "h-40"
+          }`}
         />
 
         {showSchedulePicker && (
