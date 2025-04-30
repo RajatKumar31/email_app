@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
-import { emailQueue } from '../jobs/index';
+import { emailQueue } from '../jobs/emailQueue';
 import { emails } from '../schema/email';
 
 export async function schedule(req: Request, res: Response): Promise<any> {
