@@ -6,7 +6,9 @@
 3. Create a .env file and add the following:
    
     DATABASE_URL= postgresql://username:password@localhost:5432/email_sender (pgsql db connection string)
+   
     RESEND_API_KEY= re_KKEEo8hN_asdfQFx7pccRgsXh23G3QgF (resend api key)
+   
     REDIS_URL= redis://localhost:6379 (redis connection url)
 
 5. Run "npx drizzle-kit push"
