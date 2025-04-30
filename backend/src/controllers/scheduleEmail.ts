@@ -14,10 +14,6 @@ export async function schedule(req: Request, res: Response): Promise<any> {
         if (delay < 0) {
             return res.status(500).json({ message: "Invalid scheduled time" });
         }
-        // Convert delay to minutes
-        const delayInMinutes = delay / 60000;
-
-        // console.log(`Delay in minutes: ${delayInMinutes}`);
 
         // Insert email data into the database with a 'scheduled' status
         const insertedEmail = await db.insert(emails).values({
