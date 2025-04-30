@@ -15,6 +15,9 @@ export default function SentEmailList() {
   const [emails, setEmails] = useState<Email[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const limit = 4;
+  const [totalEmails, setTotalEmails] = useState(0); // optional: for Gmail-style count
 
   useEffect(() => {
     const fetchEmails = async () => {
@@ -22,8 +25,11 @@ export default function SentEmailList() {
       setError(null);
 
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}?page=${page}&limit=${limit}`,
+        );
         setEmails(response.data.data);
+        setTotalEmails(response.data.totalItems);
       } catch (err: any) {
         setError("Failed to fetch sent emails");
       } finally {
@@ -32,7 +38,10 @@ export default function SentEmailList() {
     };
 
     fetchEmails();
-  }, []);
+  }, [page]);
+
+  const start = (page - 1) * limit + 1;
+  const end = Math.min(page * limit, totalEmails);
 
   return (
     <div className="space-y-4 max-w-4xl mx-auto mt-8">
@@ -41,6 +50,31 @@ export default function SentEmailList() {
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-600">{error}</p>}
 
+      {/* Pagination Controls - Top Right */}
+      <div className="flex justify-end mb-4">
+        <div className="flex items-center gap-4">
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm"
+          >
+            Previous
+          </button>
+
+          <p className="text-sm text-gray-600">
+            {start}–{end} of {totalEmails}
+          </p>
+
+          <button
+            disabled={end >= totalEmails}
+            onClick={() => setPage((prev) => prev + 1)}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
       <div className="space-y-4">
         {emails.map((email) => (
           <div key={email.id} className="border p-4 rounded-md shadow-sm">
@@ -48,7 +82,15 @@ export default function SentEmailList() {
             <p className="text-sm text-gray-500">To: {email.to}</p>
             <p className="mt-2">{email.body}</p>
             <p className="text-xs text-gray-400">
-              Sent At: {new Date(email.sentAt).toLocaleString()}
+              Sent At:{" "}
+              {new Date(email.sentAt).toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}
             </p>
           </div>
         ))}
