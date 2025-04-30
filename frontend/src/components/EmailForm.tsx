@@ -81,10 +81,16 @@ export default function EmailForm({ onClose }: EmailFormProps) {
       <div className="flex justify-between items-center px-4 py-2 border-b bg-gray-100">
         <h2 className="font-semibold text-lg">New Message</h2>
         <div className="flex space-x-2">
-          <button onClick={() => setIsMaximized(!isMaximized)}>
+          <button
+            onClick={() => setIsMaximized(!isMaximized)}
+            className="cursor-pointer"
+          >
             {isMaximized ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
           </button>
-          <button onClick={onClose} className="hover:text-red-500">
+          <button
+            onClick={onClose}
+            className="hover:text-red-500 cursor-pointer"
+          >
             <X size={18} />
           </button>
         </div>
@@ -124,20 +130,20 @@ export default function EmailForm({ onClose }: EmailFormProps) {
 
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="cursor-pointer">
               {scheduledAt ? "Schedule Email" : "Send Email"}
             </Button>
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="cursor-pointer">
                   <ChevronDown size={16} />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-40 p-2">
                 <button
                   onClick={() => setShowSchedulePicker((prev) => !prev)}
-                  className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded text-sm"
+                  className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded text-sm cursor-pointer"
                 >
                   Schedule Send
                 </button>
