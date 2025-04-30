@@ -97,12 +97,14 @@ export default function EmailForm({ onClose }: EmailFormProps) {
           value={to}
           onChange={(e) => setTo(e.target.value)}
           required
+          disabled={loading}
         />
         <Input
           placeholder="Subject"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           required
+          disabled={loading}
         />
         <Textarea
           placeholder="Body"
@@ -113,6 +115,7 @@ export default function EmailForm({ onClose }: EmailFormProps) {
           className={`overflow-y-auto resize-none ${
             isMaximized ? "h-80" : "h-40"
           }`}
+          disabled={loading}
         />
 
         {showSchedulePicker && (
@@ -133,7 +136,7 @@ export default function EmailForm({ onClose }: EmailFormProps) {
               </PopoverTrigger>
               <PopoverContent className="w-40 p-2">
                 <button
-                  onClick={() => setShowSchedulePicker(true)}
+                  onClick={() => setShowSchedulePicker((prev) => !prev)}
                   className="w-full text-left hover:bg-gray-100 px-2 py-1 rounded text-sm"
                 >
                   Schedule Send
