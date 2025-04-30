@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import { RefreshCcw } from "lucide-react";
 
 interface Email {
   id: string;
@@ -17,35 +18,45 @@ export default function SentEmailList() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const limit = 4;
-  const [totalEmails, setTotalEmails] = useState(0); // optional: for Gmail-style count
+  const [totalEmails, setTotalEmails] = useState(0);
+
+  const fetchEmails = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}?page=${page}&limit=${limit}`,
+      );
+      setEmails(response.data.data);
+      setTotalEmails(response.data.totalItems);
+    } catch (err: any) {
+      setError("Failed to fetch sent emails");
+    } finally {
+      setLoading(false);
+    }
+  }, [page]);
 
   useEffect(() => {
-    const fetchEmails = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}?page=${page}&limit=${limit}`,
-        );
-        setEmails(response.data.data);
-        setTotalEmails(response.data.totalItems);
-      } catch (err: any) {
-        setError("Failed to fetch sent emails");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchEmails();
-  }, [page]);
+  }, [fetchEmails]);
 
   const start = (page - 1) * limit + 1;
   const end = Math.min(page * limit, totalEmails);
 
   return (
     <div className="space-y-4 max-w-4xl mx-auto mt-8">
-      <h2 className="text-xl font-semibold">Sent Emails</h2>
+      <div className="flex items-center">
+        <h2 className="text-xl font-semibold">Sent Emails</h2>
+        <button
+          onClick={fetchEmails}
+          className="flex items-center gap-1 text-sm text-gray-600 px-3 py-1 rounded cursor-pointer"
+        >
+          <span>
+            <RefreshCcw />
+          </span>
+        </button>
+      </div>
 
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-600">{error}</p>}
@@ -56,7 +67,7 @@ export default function SentEmailList() {
           <button
             disabled={page === 1}
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm"
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm cursor-pointer"
           >
             Previous
           </button>
@@ -68,7 +79,7 @@ export default function SentEmailList() {
           <button
             disabled={end >= totalEmails}
             onClick={() => setPage((prev) => prev + 1)}
-            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm"
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 text-sm cursor-pointer"
           >
             Next
           </button>
