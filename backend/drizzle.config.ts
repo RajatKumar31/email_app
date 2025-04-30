@@ -6,7 +6,7 @@ export default defineConfig({
     schema: './src/schema',
     dialect: 'postgresql',
     dbCredentials: {
-        url: "postgresql://postgres:rajatkumar@localhost:5432/email_sender"
+        url: process.env.DATABASE_URL!,
     },
 });
 
