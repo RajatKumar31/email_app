@@ -93,10 +93,12 @@ export default function SentEmailList() {
       {!loading && !error && (
         <div className="space-y-4">
           {emails.map((email) => (
-            <div key={email.id} className="border p-4 rounded-md shadow-sm">
+            <div key={email.id} className="border p-2 rounded-md shadow-sm">
               <h3 className="font-semibold">{email.subject}</h3>
               <p className="text-sm text-gray-500">To: {email.to}</p>
-              <p className="mt-2">{email.body}</p>
+              <p className="mt-1 text-ellipsis overflow-hidden whitespace-normal">
+                {email.body}
+              </p>
               <p className="text-xs text-gray-400">
                 Sent At: {new Date(email.sentAt).toLocaleString()}
               </p>
