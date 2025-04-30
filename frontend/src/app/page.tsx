@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <main className="flex h-screen">
       <Sidebar onComposeAction={() => setShowComposer(true)} />
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+      <div className="flex-1 overflow-y-auto bg-gray-50">
         <EmailList />
       </div>
       {showComposer && (
