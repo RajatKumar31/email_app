@@ -11,15 +11,13 @@ export async function listEmails(req: Request, res: Response): Promise<any> {
         const offset = (pageNum - 1) * limitNum;
 
         const data = await db.select().from(emails)
-            .where(eq(emails.status, 'sent'))
-            .orderBy(desc(emails.sentAt))
+            .orderBy(desc(emails.createdAt))
             .limit(limitNum)
             .offset(offset);
 
         const [{ count }] = await db
             .select({ count: sql<number>`count(*)` })
             .from(emails)
-            .where(eq(emails.status, 'sent'));
 
         const totalItems = Number(count);
         const totalPages = Math.ceil(totalItems / limitNum);
