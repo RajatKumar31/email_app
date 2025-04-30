@@ -93,20 +93,26 @@ export default function SentEmailList() {
       {/* Error Message */}
       {!loading && error && <p className="text-red-600">{error}</p>}
       {!loading && !error && (
-        <div className="space-y-4">
-          {emails.map((email) => (
-            <div key={email.id} className="border p-2 rounded-md shadow-sm">
-              <h3 className="font-semibold">{email.subject}</h3>
-              <p className="text-sm text-gray-500">To: {email.to}</p>
-              <p className="mt-1 text-ellipsis overflow-hidden whitespace-normal">
-                {email.body}
-              </p>
-              <p className="text-xs text-gray-400">
-                Sent At: {new Date(email.sentAt).toLocaleString()}
-              </p>
+        <>
+          {emails.length === 0 ? (
+            <p className="text-center text-gray-500">No emails found.</p>
+          ) : (
+            <div className="space-y-4">
+              {emails.map((email) => (
+                <div key={email.id} className="border p-2 rounded-md shadow-sm">
+                  <h3 className="font-semibold">{email.subject}</h3>
+                  <p className="text-sm text-gray-500">To: {email.to}</p>
+                  <p className="mt-1 text-ellipsis overflow-hidden whitespace-normal">
+                    {email.body}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Sent At: {new Date(email.sentAt).toLocaleString()}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );
