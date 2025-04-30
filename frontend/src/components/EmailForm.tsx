@@ -44,19 +44,14 @@ export default function EmailForm({ onClose }: EmailFormProps) {
     try {
       if (scheduledAt) {
         // Send email via schedule API
-        const response = await axios.post(
+        await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/schedule`,
           emailData,
         );
-        console.log("response : ", response);
         setSuccess("Email scheduled successfully!");
       } else {
         // Send email immediately
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/send`,
-          emailData,
-        );
-        console.log("response : ", response);
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/send`, emailData);
         setSuccess("Email sent successfully!");
       }
 
@@ -67,7 +62,7 @@ export default function EmailForm({ onClose }: EmailFormProps) {
       onClose?.();
     } catch (err: any) {
       setError(
-        err?.response?.data?.error || "Failed to send or schedule email",
+        err?.response?.data?.message || "Failed to send or schedule email",
       );
     } finally {
       setLoading(false);
@@ -75,7 +70,6 @@ export default function EmailForm({ onClose }: EmailFormProps) {
   };
 
   return (
-    // <div className="fixed bottom-4 right-4 w-full max-w-xl bg-white shadow-xl rounded-md overflow-hidden border border-gray-200">
     <div
       className={`${
         isMaximized
@@ -87,12 +81,6 @@ export default function EmailForm({ onClose }: EmailFormProps) {
       <div className="flex justify-between items-center px-4 py-2 border-b bg-gray-100">
         <h2 className="font-semibold text-lg">New Message</h2>
         <div className="flex space-x-2">
-          {/* <button className="hover:text-gray-600">
-            <Maximize2 size={18} />
-          </button>
-          <button onClick={onClose} className="hover:text-red-500">
-            <X size={18} />
-          </button>*/}
           <button onClick={() => setIsMaximized(!isMaximized)}>
             {isMaximized ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
           </button>
@@ -130,21 +118,10 @@ export default function EmailForm({ onClose }: EmailFormProps) {
         {showSchedulePicker && (
           <DateTimePicker value={scheduledAt} onChangeAction={setScheduledAt} />
         )}
-        {/*<DateTimePicker value={scheduledAt} onChangeAction={setScheduledAt} />*/}
-
-        {/*<div className="flex justify-between items-center">
-          <Button type="submit">
-            {scheduledAt ? "Schedule Email" : "Send Email"}
-          </Button>
-          <div>
-            {success && <p className="text-green-600 text-sm">{success}</p>}
-            {error && <p className="text-red-600 text-sm">{error}</p>}
-          </div>
-        </div>*/}
 
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
-            <Button type="submit">
+            <Button type="submit" disabled={loading}>
               {scheduledAt ? "Schedule Email" : "Send Email"}
             </Button>
 
