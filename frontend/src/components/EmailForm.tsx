@@ -51,11 +51,12 @@ export default function EmailForm({ onClose, page }: EmailFormProps) {
       });
     },
     onError: (err: unknown) => {
-      if (err instanceof AxiosError) {
-        setError(
-          err?.response?.data?.message || "Failed to send or schedule email",
-        );
-      }
+      setError(
+        (err instanceof AxiosError
+          ? err.response?.data?.message
+          : "An unexpected server error occurred!") ||
+          "Failed to send or schedule email",
+      );
     },
   });
 
