@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { sendOrScheduleEmail } from "../services/fetchEmails";
+import { sendOrScheduleEmail } from "../services/sendOrScheduleEmail";
 
 interface EmailFormProps {
   onClose?: () => void;
