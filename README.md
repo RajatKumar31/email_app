@@ -3,7 +3,7 @@
 # Tech Stack :
 Backend : NodeJS, ExpressJS, Postgresql, BullMQ, Drizzle ORM
 
-Frontend : Nextjs, Shadcn/ui, Tailwind css
+Frontend : Nextjs, React Query, Shadcn/ui, Tailwind css
 
 # Steps to setup the project:
 1. Clone the project.
