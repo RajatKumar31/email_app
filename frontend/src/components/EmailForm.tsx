@@ -1,40 +1,66 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { DateTimePicker } from "@/components/ui/datetimepicker";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { X, Maximize2, Minimize2, ChevronDown } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { sendOrScheduleEmail } from "../services/fetchEmails";
 
 interface EmailFormProps {
   onClose?: () => void;
-  onEmailSent?: () => void;
+  page: number;
 }
 
-export default function EmailForm({
-  onClose,
-  onEmailSent,
-}: EmailFormProps & { onEmailSent?: () => void }) {
+export default function EmailForm({ onClose, page }: EmailFormProps) {
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null);
   const [isMaximized, setIsMaximized] = useState(false);
   const [showSchedulePicker, setShowSchedulePicker] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: sendOrScheduleEmail,
+    onSuccess: () => {
+      setSuccess(
+        scheduledAt
+          ? "Email scheduled successfully!"
+          : "Email sent successfully!",
+      );
+      setTo("");
+      setSubject("");
+      setBody("");
+      setScheduledAt(null);
+      onClose?.();
+
+      queryClient.invalidateQueries({
+        queryKey: ["emails", page],
+      });
+    },
+    onError: (err: unknown) => {
+      if (err instanceof AxiosError) {
+        setError(
+          err?.response?.data?.message || "Failed to send or schedule email",
+        );
+      }
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setSuccess(null);
     setError(null);
 
@@ -45,35 +71,7 @@ export default function EmailForm({
       scheduledAt: scheduledAt ? scheduledAt.toISOString() : null,
     };
 
-    try {
-      if (scheduledAt) {
-        // Send email via schedule API
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/schedule`,
-          emailData,
-        );
-        setSuccess("Email scheduled successfully!");
-      } else {
-        // Send email immediately
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/send`, emailData);
-        setSuccess("Email sent successfully!");
-      }
-
-      setTo("");
-      setSubject("");
-      setBody("");
-      setScheduledAt(null);
-      onClose?.();
-      onEmailSent?.();
-    } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        setError(
-          err?.response?.data?.message || "Failed to send or schedule email",
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
+    mutate(emailData);
   };
 
   return (
@@ -110,14 +108,14 @@ export default function EmailForm({
           value={to}
           onChange={(e) => setTo(e.target.value)}
           required
-          disabled={loading}
+          disabled={isPending}
         />
         <Input
           placeholder="Subject"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           required
-          disabled={loading}
+          disabled={isPending}
         />
         <Textarea
           placeholder="Body"
@@ -128,7 +126,7 @@ export default function EmailForm({
           className={`overflow-y-auto resize-none ${
             isMaximized ? "h-80" : "h-40"
           }`}
-          disabled={loading}
+          disabled={isPending}
         />
 
         {showSchedulePicker && (
@@ -137,7 +135,11 @@ export default function EmailForm({
 
         <div className="flex items-center justify-between">
           <div className="flex gap-1">
-            <Button type="submit" disabled={loading} className="cursor-pointer">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="cursor-pointer"
+            >
               {scheduledAt ? "Schedule Email" : "Send Email"}
             </Button>
 
